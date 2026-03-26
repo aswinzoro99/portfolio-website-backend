@@ -1,0 +1,23 @@
+public/js/app.js
+  b1afbee2af9b375b 356-361
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "11b6199b4d035a4a2084bcf2e7146a255baa9335",
+  "prompts": {
+    "b1afbee2af9b375b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "203ae11c-72b0-4e8c-acec-f82a8ae1741c",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 6,
+      "total_deletions": 0,
+      "accepted_lines": 6,
+      "overriden_lines": 0
+    }
+  }
+}
