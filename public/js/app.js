@@ -81,7 +81,7 @@ function startSlideshow(){
     imgs[slideIdx].classList.remove("active");
     slideIdx=(slideIdx+1)%imgs.length;
     imgs[slideIdx].classList.add("active");
-  },2200);
+  },1600);
 }
 
 /* === GALLERY === */
