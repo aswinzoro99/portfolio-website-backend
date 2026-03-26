@@ -24,6 +24,7 @@ img{display:block;max-width:100%}
 .slideshow img.active{opacity:1}
 
 /* === VIEW ALL BUTTON === */
+.main-bottom{display:flex;flex-direction:column;align-items:center}
 .view-all-btn{font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;background:none;border:none;color:var(--dim);padding:.5rem 0;margin-bottom:1.5rem;transition:color .3s;border-bottom:1px solid transparent}
 .view-all-btn:hover{color:var(--text);border-bottom-color:var(--text)}
 

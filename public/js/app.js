@@ -98,9 +98,12 @@ function openLightbox(id){
   const count=likeCountMap.get(id)||0;
   c.innerHTML='<img src="'+p.url+'" alt="'+p.title+'">'
     +'<div class="lb-info"><div class="lb-desc">'+(p.desc||p.title)+'</div>'
-    +'<div class="lb-like-wrap"><button class="lb-like'+(liked?" liked":"")+'" data-id="'+id+'" onclick="toggleLike('+id+',this)">'
+    +'<div class="lb-like-wrap"><button class="lb-like'+(liked?" liked":"")+'" data-id="'+id+'">'
     +'<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>'
     +'<span class="like-count">'+count+'</span></button></div></div>';
+  c.querySelector('.lb-like').addEventListener('click',function(){
+    toggleLike(id,this);
+  });
   lb.classList.add("open");
   gsap.fromTo("#lbContent img",{opacity:0,scale:.97},{opacity:1,scale:1,duration:.4,ease:"power2.out"});
   gsap.fromTo(".lb-info",{opacity:0,y:12},{opacity:1,y:0,duration:.35,delay:.15,ease:"power2.out"});
@@ -240,7 +243,7 @@ function renderAdminList(){
     d.className="admin-item";
     d.innerHTML='<img src="'+p.url+'" alt="">'
       +'<div class="admin-item-info"><span>'+p.title+'</span><span>'+(p.desc||"")+'</span></div>'
-      +'<div class="admin-item-actions"><button onclick="editPhoto('+p.id+')">Edit</button><button class="del-btn" onclick="deletePhoto('+p.id+')">Del</button></div>';
+      +'<div class="admin-item-actions"><button class="edit-btn" data-id="'+p.id+'">Edit</button><button class="del-btn" data-id="'+p.id+'">Del</button></div>';
     el.appendChild(d);
   });
 }
@@ -310,6 +313,38 @@ function updateThemeIcon(theme){
   if(saved){document.documentElement.setAttribute('data-theme',saved);updateThemeIcon(saved);}
 })();
 
+/* === EVENT LISTENERS === */
+document.querySelector('.view-all-btn').addEventListener('click',openGallery);
+document.querySelector('.gallery-close').addEventListener('click',closeGallery);
+document.querySelector('.lb-close').addEventListener('click',closeLightbox);
+document.querySelector('.theme-toggle').addEventListener('click',toggleTheme);
+document.querySelector('.admin-trigger').addEventListener('click',openAdmin);
+
+document.getElementById('loginForm').addEventListener('submit',handleLogin);
+document.getElementById('loginCancelBtn').addEventListener('click',closeAdmin);
+document.getElementById('forgotLink').addEventListener('click',function(){showView('viewForgot');});
+document.getElementById('forgotForm').addEventListener('submit',handleForgot);
+document.getElementById('forgotBackBtn').addEventListener('click',function(){showView('viewLogin');});
+document.getElementById('resetForm').addEventListener('submit',handleReset);
+document.getElementById('resetBackBtn').addEventListener('click',function(){showView('viewLogin');});
+document.getElementById('logoutBtn').addEventListener('click',handleLogout);
+document.getElementById('addForm').addEventListener('submit',addPhoto);
+
+document.getElementById('adminList').addEventListener('click',function(e){
+  const editBtn=e.target.closest('.edit-btn');
+  const delBtn=e.target.closest('.del-btn');
+  if(editBtn) editPhoto(editBtn.dataset.id);
+  if(delBtn) deletePhoto(delBtn.dataset.id);
+});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){
+    if(document.getElementById("lightbox").classList.contains("open"))closeLightbox();
+    else if(document.getElementById("galleryOverlay").classList.contains("open"))closeGallery();
+    else if(document.getElementById("adminOverlay").classList.contains("open"))closeAdmin();
+  }
+});
+
 /* === INIT === */
 (async()=>{
   await fetchPhotos();
@@ -319,11 +354,3 @@ function updateThemeIcon(theme){
   gsap.fromTo(".view-all-btn",{opacity:0},{opacity:1,duration:.35,delay:.3,ease:"power2.out"});
   gsap.fromTo(".bottom-contact",{opacity:0,y:8},{opacity:1,y:0,duration:.35,delay:.38,ease:"power2.out"});
 })();
-
-document.addEventListener("keydown",e=>{
-  if(e.key==="Escape"){
-    if(document.getElementById("lightbox").classList.contains("open"))closeLightbox();
-    else if(document.getElementById("galleryOverlay").classList.contains("open"))closeGallery();
-    else if(document.getElementById("adminOverlay").classList.contains("open"))closeAdmin();
-  }
-});
