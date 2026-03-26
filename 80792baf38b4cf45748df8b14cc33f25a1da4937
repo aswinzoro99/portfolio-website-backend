@@ -1,0 +1,23 @@
+render.yaml
+  c0ada25405989f80 15-18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "80792baf38b4cf45748df8b14cc33f25a1da4937",
+  "prompts": {
+    "c0ada25405989f80": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c4034fca-9224-47e9-90dd-7f7c564863c4",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 0,
+      "accepted_lines": 4,
+      "overriden_lines": 0
+    }
+  }
+}
