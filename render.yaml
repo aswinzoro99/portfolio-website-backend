@@ -1,0 +1,24 @@
+services:
+  - type: web
+    runtime: node
+    name: portfolio-website-backend
+    repo: https://github.com/your-username/portfolio-website-backend
+    branch: main
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
