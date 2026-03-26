@@ -1,0 +1,63 @@
+server.js
+  ad391c7985a9b0c3 1-2,4-5
+.github/workflows/ci.yml
+  ad391c7985a9b0c3 1-20
+.gitignore
+  ad391c7985a9b0c3 1-4
+package.json
+  ad391c7985a9b0c3 2,4-5,8-9,12-13,20-22
+.github/workflows/deploy.yml
+  ad391c7985a9b0c3 1-12
+.env.example
+  77165e91ee3cadd6 9
+  ad391c7985a9b0c3 1-8,10-13
+README.md
+  ad391c7985a9b0c3 1-57,59-92
+  77165e91ee3cadd6 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "d1e766f3f08cb1df2629fe210f672a6ec8aa049c",
+  "prompts": {
+    "77165e91ee3cadd6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e30a3825-5d3d-4dfb-889e-c97f3d87bef4",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 3,
+      "total_deletions": 3,
+      "accepted_lines": 2,
+      "overriden_lines": 0
+    },
+    "ad391c7985a9b0c3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "8a58dc29-781f-46c2-8d35-e975c665cb7e",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 1075,
+      "total_deletions": 240,
+      "accepted_lines": 153,
+      "overriden_lines": 0
+    },
+    "f639f66d9c1a9030": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "61f55371-2ecd-47bd-a207-eac3dd0b3786",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 49,
+      "total_deletions": 9,
+      "accepted_lines": 0,
+      "overriden_lines": 0
+    }
+  }
+}
