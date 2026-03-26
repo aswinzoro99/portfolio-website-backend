@@ -353,6 +353,12 @@ document.getElementById('resetForm').addEventListener('submit',handleReset);
 document.getElementById('resetBackBtn').addEventListener('click',function(){showView('viewLogin');});
 document.getElementById('logoutBtn').addEventListener('click',handleLogout);
 document.getElementById('addForm').addEventListener('submit',addPhoto);
+document.getElementById('adminList').addEventListener('click',function(e){
+  const editBtn=e.target.closest('.edit-btn');
+  const delBtn=e.target.closest('.del-btn');
+  if(editBtn) editPhoto(Number(editBtn.dataset.id));
+  if(delBtn) deletePhoto(Number(delBtn.dataset.id));
+});
 
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){
