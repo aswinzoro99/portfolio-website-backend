@@ -1,0 +1,55 @@
+public/index.html
+  c460061e6c6109d3 19-20,31,38,89,93
+  c0ada25405989f80 50,53,55,59,61,66,70,75
+public/css/styles.css
+  c460061e6c6109d3 27
+public/js/app.js
+  c460061e6c6109d3 246,316-331,333-338,347
+  b1afbee2af9b375b 101,104-106,339
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "1f25957105b00c7c090404a1fc6c4e359fa5da11",
+  "prompts": {
+    "b1afbee2af9b375b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "203ae11c-72b0-4e8c-acec-f82a8ae1741c",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 26,
+      "total_deletions": 4,
+      "accepted_lines": 5,
+      "overriden_lines": 0
+    },
+    "c0ada25405989f80": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "c4034fca-9224-47e9-90dd-7f7c564863c4",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 14,
+      "total_deletions": 14,
+      "accepted_lines": 8,
+      "overriden_lines": 0
+    },
+    "c460061e6c6109d3": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "803d4da8-32ce-482f-808a-25e05272facf",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 43,
+      "total_deletions": 37,
+      "accepted_lines": 40,
+      "overriden_lines": 0
+    }
+  }
+}
