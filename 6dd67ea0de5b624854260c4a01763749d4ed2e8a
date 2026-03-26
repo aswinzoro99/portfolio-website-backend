@@ -1,0 +1,23 @@
+public/css/styles.css
+  b1afbee2af9b375b 58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "6dd67ea0de5b624854260c4a01763749d4ed2e8a",
+  "prompts": {
+    "b1afbee2af9b375b": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "203ae11c-72b0-4e8c-acec-f82a8ae1741c",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 1,
+      "overriden_lines": 0
+    }
+  }
+}
