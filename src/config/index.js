@@ -1,8 +1,17 @@
 const path = require('path');
+const crypto = require('crypto');
+
+const isProduction = (process.env.NODE_ENV || 'development') === 'production';
 
 const config = Object.freeze({
   nodeEnv: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT, 10) || 8080,
+
+  jwtSecret: process.env.JWT_SECRET || (isProduction
+    ? (() => { throw new Error('JWT_SECRET is required in production'); })()
+    : crypto.randomBytes(32).toString('hex')),
+
+  adminDefaultPassword: process.env.ADMIN_DEFAULT_PASSWORD || '',
 
   smtp: {
     host: process.env.SMTP_HOST || '',

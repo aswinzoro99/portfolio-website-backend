@@ -1,7 +1,7 @@
 services:
   - type: web
     runtime: node
-    name: portfolio-website-backend
+    name: akshay-ranjith
     repo: https://github.com/aswinzoro99/portfolio-website-backend
     branch: main
     buildCommand: npm install

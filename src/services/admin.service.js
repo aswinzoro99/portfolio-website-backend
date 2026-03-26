@@ -34,14 +34,19 @@ function writeAdmin(data) {
 
 function seedAdmin() {
   if (!readAdmin()) {
+    const defaultPassword = config.adminDefaultPassword;
+    if (!defaultPassword) {
+      console.error('No admin account found. Set ADMIN_DEFAULT_PASSWORD env var to create one on startup.');
+      return;
+    }
     writeAdmin({
       username: 'akshay',
-      password: hashPassword('admin123'),
+      password: hashPassword(defaultPassword),
       email: config.adminEmail,
       resetToken: null,
       resetExpiry: null,
     });
-    console.log('Default admin created: akshay / admin123');
+    console.log('Default admin created (username: akshay). Change the password after first login.');
   }
 }
 

@@ -152,6 +152,7 @@ function spawnParticles(container){
 
 /* === ADMIN === */
 let adminAuth=false;
+let authToken=null;
 function openAdmin(){
   const ov=document.getElementById("adminOverlay");
   ov.classList.add("open");
@@ -198,7 +199,7 @@ async function handleLogin(e){
   const p=document.getElementById("loginPass").value;
   try{
     const res=await fetch(API_BASE+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
-    if(res.ok){adminAuth=true;showPanel();}
+    if(res.ok){const d=await res.json();authToken=d.token;adminAuth=true;showPanel();}
     else{const d=await res.json();showErr(d.error||'Wrong credentials');}
   }catch(err){showErr('Server unavailable. Make sure the backend is running.');}
 }

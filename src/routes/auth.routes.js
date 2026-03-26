@@ -1,6 +1,8 @@
 const { Router } = require('express');
 const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
+const config = require('../config');
 const { readAdmin, writeAdmin, verifyPassword, hashPassword } = require('../services/admin.service');
 const { getTransporter } = require('../services/email.service');
 
@@ -13,7 +15,8 @@ router.post('/login', (req, res) => {
   if (username !== admin.username || !verifyPassword(password, admin.password)) {
     return res.status(401).json({ error: 'Invalid username or password' });
   }
-  res.json({ ok: true });
+  const token = jwt.sign({ username: admin.username }, config.jwtSecret, { expiresIn: '2h' });
+  res.json({ ok: true, token });
 });
 
 router.post('/forgot-password', async (req, res) => {
@@ -44,12 +47,16 @@ router.post('/forgot-password', async (req, res) => {
       </div>`,
     });
     const previewUrl = nodemailer.getTestMessageUrl(info);
-    if (previewUrl) console.log('Reset email preview:', previewUrl);
-    console.log('Reset token:', token);
+    if (config.nodeEnv !== 'production') {
+      if (previewUrl) console.log('Reset email preview:', previewUrl);
+      console.log('Reset token:', token);
+    }
     res.json({ message: 'Reset token sent to admin email. Check your inbox.', preview: previewUrl || undefined });
   } catch (err) {
     console.error('Email send failed:', err);
-    console.log('Reset token (fallback):', token);
+    if (config.nodeEnv !== 'production') {
+      console.log('Reset token (fallback):', token);
+    }
     res.json({ message: 'Reset token sent to admin email. Check your inbox.' });
   }
 });

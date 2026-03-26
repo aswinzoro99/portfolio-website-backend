@@ -2,6 +2,7 @@ const { Router } = require('express');
 const fs = require('fs');
 const path = require('path');
 const config = require('../config');
+const requireAuth = require('../middleware/auth');
 const upload = require('../middleware/upload');
 const { readPhotos, writePhotos } = require('../services/photo.service');
 
@@ -11,7 +12,7 @@ router.get('/', (_req, res) => {
   res.json(readPhotos());
 });
 
-router.post('/', upload.single('image'), (req, res) => {
+router.post('/', requireAuth, upload.single('image'), (req, res) => {
   const photos = readPhotos();
   const id = Date.now();
   const title = req.body.title || 'Untitled';
@@ -32,7 +33,7 @@ router.post('/', upload.single('image'), (req, res) => {
   res.json(photo);
 });
 
-router.put('/:id', upload.single('image'), (req, res) => {
+router.put('/:id', requireAuth, upload.single('image'), (req, res) => {
   const photos = readPhotos();
   const idx = photos.findIndex((p) => p.id === Number(req.params.id));
   if (idx === -1) return res.status(404).json({ error: 'Not found' });
@@ -52,7 +53,7 @@ router.put('/:id', upload.single('image'), (req, res) => {
   res.json(photos[idx]);
 });
 
-router.delete('/:id', (req, res) => {
+router.delete('/:id', requireAuth, (req, res) => {
   let photos = readPhotos();
   const photo = photos.find((p) => p.id === Number(req.params.id));
   if (!photo) return res.status(404).json({ error: 'Not found' });
