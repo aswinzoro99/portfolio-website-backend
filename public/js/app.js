@@ -7,6 +7,29 @@ let slideTimer=null;
 const likedSet=new Set();
 const likeCountMap=new Map();
 
+/* === CRYPTO === */
+let _rsaPublicKey=null;
+async function fetchRsaKey(){
+  const res=await fetch(API_BASE+'/api/public-key');
+  const {publicKey}=await res.json();
+  const pem=publicKey.replace(/-----[^-]+-----/g,'').replace(/\s/g,'');
+  const der=Uint8Array.from(atob(pem),c=>c.charCodeAt(0));
+  _rsaPublicKey=await crypto.subtle.importKey('spki',der,{name:'RSA-OAEP',hash:'SHA-256'},false,['encrypt']);
+  return _rsaPublicKey;
+}
+async function encryptPassword(plain){
+  const key=_rsaPublicKey||await fetchRsaKey();
+  try{
+    const buf=await crypto.subtle.encrypt({name:'RSA-OAEP'},key,new TextEncoder().encode(plain));
+    return btoa(String.fromCharCode(...new Uint8Array(buf)));
+  }catch{
+    _rsaPublicKey=null;
+    const freshKey=await fetchRsaKey();
+    const buf=await crypto.subtle.encrypt({name:'RSA-OAEP'},freshKey,new TextEncoder().encode(plain));
+    return btoa(String.fromCharCode(...new Uint8Array(buf)));
+  }
+}
+
 /* === API === */
 async function fetchPhotos(){
   try{
@@ -201,7 +224,8 @@ async function handleLogin(e){
   const u=document.getElementById("loginUser").value;
   const p=document.getElementById("loginPass").value;
   try{
-    const res=await fetch(API_BASE+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+    const encrypted=await encryptPassword(p);
+    const res=await fetch(API_BASE+'/api/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:encrypted})});
     if(res.ok){const d=await res.json();authToken=d.token;adminAuth=true;showPanel();}
     else{const d=await res.json();showErr(d.error||'Wrong credentials');}
   }catch(err){showErr('Server unavailable. Make sure the backend is running.');}
@@ -228,7 +252,8 @@ async function handleReset(e){
   if(!pw||pw.length<6){showErr('Password must be at least 6 characters');return;}
   if(pw!==confirm){showErr('Passwords do not match');return;}
   try{
-    const res=await fetch(API_BASE+'/api/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,password:pw})});
+    const encrypted=await encryptPassword(pw);
+    const res=await fetch(API_BASE+'/api/reset-password',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token,password:encrypted})});
     const d=await res.json();
     if(res.ok){showMsg('Password reset successful. You can now login.');showView('viewLogin');}
     else{showErr(d.error||'Invalid or expired token');}
@@ -313,13 +338,12 @@ function updateThemeIcon(theme){
   if(saved){document.documentElement.setAttribute('data-theme',saved);updateThemeIcon(saved);}
 })();
 
-/* === EVENT LISTENERS === */
-document.querySelector('.view-all-btn').addEventListener('click',openGallery);
-document.querySelector('.gallery-close').addEventListener('click',closeGallery);
-document.querySelector('.lb-close').addEventListener('click',closeLightbox);
-document.querySelector('.theme-toggle').addEventListener('click',toggleTheme);
-document.querySelector('.admin-trigger').addEventListener('click',openAdmin);
-
+/* === EVENT BINDINGS === */
+document.getElementById('viewAllBtn').addEventListener('click',openGallery);
+document.getElementById('galleryCloseBtn').addEventListener('click',closeGallery);
+document.getElementById('lbCloseBtn').addEventListener('click',closeLightbox);
+document.getElementById('themeToggleBtn').addEventListener('click',toggleTheme);
+document.getElementById('adminTriggerBtn').addEventListener('click',openAdmin);
 document.getElementById('loginForm').addEventListener('submit',handleLogin);
 document.getElementById('loginCancelBtn').addEventListener('click',closeAdmin);
 document.getElementById('forgotLink').addEventListener('click',function(){showView('viewForgot');});
@@ -329,13 +353,6 @@ document.getElementById('resetForm').addEventListener('submit',handleReset);
 document.getElementById('resetBackBtn').addEventListener('click',function(){showView('viewLogin');});
 document.getElementById('logoutBtn').addEventListener('click',handleLogout);
 document.getElementById('addForm').addEventListener('submit',addPhoto);
-
-document.getElementById('adminList').addEventListener('click',function(e){
-  const editBtn=e.target.closest('.edit-btn');
-  const delBtn=e.target.closest('.del-btn');
-  if(editBtn) editPhoto(editBtn.dataset.id);
-  if(delBtn) deletePhoto(delBtn.dataset.id);
-});
 
 document.addEventListener("keydown",e=>{
   if(e.key==="Escape"){

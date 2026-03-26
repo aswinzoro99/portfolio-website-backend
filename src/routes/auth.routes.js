@@ -5,14 +5,25 @@ const nodemailer = require('nodemailer');
 const config = require('../config');
 const { readAdmin, writeAdmin, verifyPassword, hashPassword } = require('../services/admin.service');
 const { getTransporter } = require('../services/email.service');
+const { publicKey, decryptPayload } = require('../services/crypto.service');
 
 const router = Router();
 
+router.get('/public-key', (_req, res) => {
+  res.json({ publicKey });
+});
+
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
+  let plainPassword;
+  try {
+    plainPassword = decryptPayload(password);
+  } catch {
+    return res.status(400).json({ error: 'Invalid encrypted payload' });
+  }
   const admin = readAdmin();
   if (!admin) return res.status(500).json({ error: 'Admin not configured' });
-  if (username !== admin.username || !verifyPassword(password, admin.password)) {
+  if (username !== admin.username || !verifyPassword(plainPassword, admin.password)) {
     return res.status(401).json({ error: 'Invalid username or password' });
   }
   const token = jwt.sign({ username: admin.username }, config.jwtSecret, { expiresIn: '2h' });
@@ -63,6 +74,12 @@ router.post('/forgot-password', async (req, res) => {
 
 router.post('/reset-password', (req, res) => {
   const { token, password } = req.body;
+  let plainPassword;
+  try {
+    plainPassword = decryptPayload(password);
+  } catch {
+    return res.status(400).json({ error: 'Invalid encrypted payload' });
+  }
   const admin = readAdmin();
   if (!admin) return res.status(500).json({ error: 'Admin not configured' });
   if (!admin.resetToken || !admin.resetExpiry) {
@@ -77,10 +94,10 @@ router.post('/reset-password', (req, res) => {
   if (token.toUpperCase() !== admin.resetToken) {
     return res.status(400).json({ error: 'Invalid token' });
   }
-  if (!password || password.length < 6) {
+  if (!plainPassword || plainPassword.length < 6) {
     return res.status(400).json({ error: 'Password must be at least 6 characters' });
   }
-  admin.password = hashPassword(password);
+  admin.password = hashPassword(plainPassword);
   admin.resetToken = null;
   admin.resetExpiry = null;
   writeAdmin(admin);
