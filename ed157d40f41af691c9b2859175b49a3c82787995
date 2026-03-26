@@ -1,0 +1,35 @@
+src/config/index.js
+  77165e91ee3cadd6 2,4,10-14
+src/middleware/auth.js
+  77165e91ee3cadd6 1-19
+public/js/app.js
+  77165e91ee3cadd6 155,202
+src/app.js
+  77165e91ee3cadd6 4-5,24-43,48-49
+src/routes/auth.routes.js
+  77165e91ee3cadd6 3,5,18-19,50-51,53,57,59
+src/services/admin.service.js
+  77165e91ee3cadd6 37-41,44,49
+src/routes/photo.routes.js
+  77165e91ee3cadd6 5,15,36,56
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "ed157d40f41af691c9b2859175b49a3c82787995",
+  "prompts": {
+    "77165e91ee3cadd6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "e30a3825-5d3d-4dfb-889e-c97f3d87bef4",
+        "model": "claude-4.6-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 77,
+      "total_deletions": 10,
+      "accepted_lines": 75,
+      "overriden_lines": 0
+    }
+  }
+}
