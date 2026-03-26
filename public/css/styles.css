@@ -52,10 +52,10 @@ img{display:block;max-width:100%}
 /* === LIGHTBOX === */
 .lightbox{position:fixed;inset:0;background:var(--overlay);z-index:200;opacity:0;pointer-events:none;overflow-y:auto;display:flex;flex-direction:column;align-items:center;transition:opacity .35s ease}
 .lightbox.open{opacity:1;pointer-events:all}
-.lb-close{position:fixed;top:2rem;right:2rem;font-family:var(--font);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;background:none;border:none;color:var(--dim);cursor:pointer;z-index:3;transition:color .3s}
+.lb-close{position:sticky;top:0;align-self:flex-end;font-family:var(--font);font-size:.7rem;letter-spacing:.25em;text-transform:uppercase;background:var(--overlay);border:none;color:var(--dim);cursor:pointer;z-index:3;transition:color .3s;padding:2rem 2rem 1rem}
 .lb-close:hover{color:var(--text)}
-.lb-content{display:flex;flex-direction:column;align-items:center;padding:5rem 2rem 3rem;max-width:640px;width:100%}
-.lb-content img{width:100%;display:block}
+.lb-content{display:flex;flex-direction:column;align-items:center;padding:1rem 2rem 3rem;max-width:640px;width:100%}
+.lb-content img{max-width:100%;max-height:calc(100vh - 10rem);display:block;object-fit:contain;width:auto}
 .lb-info{width:100%;display:flex;justify-content:space-between;align-items:center;padding-top:1.2rem;gap:1rem}
 .lb-desc{font-size:.78rem;color:var(--dim);line-height:1.6;max-width:80%}
 .lb-like-wrap{position:relative;flex-shrink:0}
@@ -143,9 +143,9 @@ img{display:block;max-width:100%}
   .admin-overlay{padding:3rem 1.2rem}
 }
 @media(min-width:601px){
-  .bottom-contact{flex-direction:row;justify-content:space-between;width:100%;padding:0 200px 1rem}
-  .gallery-grid{columns:3;padding:0 200px 3rem}
-  .gallery-header{padding:2rem 200px 1rem}
-  .lb-content{max-width:none;padding:5rem 300px 300px}
-  .lb-close{right:300px}
+  .bottom-contact{flex-direction:row;justify-content:space-between;width:100%;padding:0 300px 1rem}
+  .gallery-grid{columns:3;padding:0 300px 3rem}
+  .gallery-header{padding:2rem 300px 1rem}
+  .lb-content{max-width:none;padding:1rem 300px 300px}
+  .lb-close{padding:2rem 300px 1rem}
 }
