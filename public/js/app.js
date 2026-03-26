@@ -260,17 +260,65 @@ async function handleReset(e){
   }catch(err){showErr('Server unavailable. Make sure the backend is running.');}
 }
 function handleLogout(){adminAuth=false;closeAdmin();}
+let dragSrcItem=null;
 function renderAdminList(){
   const el=document.getElementById("adminList");
   el.innerHTML="";
   photos.forEach(p=>{
     const d=document.createElement("div");
     d.className="admin-item";
-    d.innerHTML='<img src="'+p.url+'" alt="">'
+    d.draggable=true;
+    d.dataset.id=p.id;
+    d.innerHTML='<span class="drag-handle"><svg viewBox="0 0 24 24"><circle cx="9" cy="6" r="1.5"/><circle cx="15" cy="6" r="1.5"/><circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/><circle cx="9" cy="18" r="1.5"/><circle cx="15" cy="18" r="1.5"/></svg></span>'
+      +'<img src="'+p.url+'" alt="">'
       +'<div class="admin-item-info"><span>'+p.title+'</span><span>'+(p.desc||"")+'</span></div>'
       +'<div class="admin-item-actions"><button class="edit-btn" data-id="'+p.id+'">Edit</button><button class="del-btn" data-id="'+p.id+'">Del</button></div>';
+    d.addEventListener('dragstart',function(e){
+      dragSrcItem=this;
+      this.classList.add('dragging');
+      e.dataTransfer.effectAllowed='move';
+      e.dataTransfer.setData('text/plain',p.id);
+    });
+    d.addEventListener('dragend',function(){
+      this.classList.remove('dragging');
+      el.querySelectorAll('.admin-item').forEach(i=>i.classList.remove('drag-over'));
+      dragSrcItem=null;
+    });
+    d.addEventListener('dragover',function(e){
+      e.preventDefault();
+      e.dataTransfer.dropEffect='move';
+      if(this!==dragSrcItem)this.classList.add('drag-over');
+    });
+    d.addEventListener('dragleave',function(){
+      this.classList.remove('drag-over');
+    });
+    d.addEventListener('drop',function(e){
+      e.preventDefault();
+      this.classList.remove('drag-over');
+      if(dragSrcItem===this)return;
+      const items=Array.from(el.children);
+      const fromIdx=items.indexOf(dragSrcItem);
+      const toIdx=items.indexOf(this);
+      if(fromIdx<toIdx)this.after(dragSrcItem);
+      else this.before(dragSrcItem);
+      const newOrder=Array.from(el.children).map(c=>Number(c.dataset.id));
+      savePhotoOrder(newOrder);
+    });
     el.appendChild(d);
   });
+}
+async function savePhotoOrder(order){
+  try{
+    const res=await fetch(API_BASE+'/api/photos/reorder',{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
+      body:JSON.stringify({order})
+    });
+    if(res.ok){
+      photos=await res.json();
+      renderSlideshow();
+    }
+  }catch(err){console.error('Reorder failed:',err);}
 }
 async function addPhoto(e){
   e.preventDefault();

@@ -33,6 +33,17 @@ router.post('/', requireAuth, upload.single('image'), (req, res) => {
   res.json(photo);
 });
 
+router.put('/reorder', requireAuth, (req, res) => {
+  const { order } = req.body;
+  if (!Array.isArray(order)) return res.status(400).json({ error: 'order must be an array of photo IDs' });
+  const photos = readPhotos();
+  const map = new Map(photos.map((p) => [p.id, p]));
+  const reordered = order.map((id) => map.get(Number(id))).filter(Boolean);
+  photos.forEach((p) => { if (!order.includes(p.id) && !order.includes(String(p.id))) reordered.push(p); });
+  writePhotos(reordered);
+  res.json(reordered);
+});
+
 router.put('/:id', requireAuth, upload.single('image'), (req, res) => {
   const photos = readPhotos();
   const idx = photos.findIndex((p) => p.id === Number(req.params.id));
