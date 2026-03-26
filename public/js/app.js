@@ -283,7 +283,7 @@ async function addPhoto(e){
   form.append('desc',desc);
   form.append('image',fileInput.files[0]);
   try{
-    const res=await fetch(API_BASE+'/api/photos',{method:'POST',body:form});
+    const res=await fetch(API_BASE+'/api/photos',{method:'POST',headers:{'Authorization':'Bearer '+authToken},body:form});
     if(res.ok){
       await fetchPhotos();
       document.getElementById("addForm").reset();
@@ -295,7 +295,7 @@ async function addPhoto(e){
 }
 async function deletePhoto(id){
   try{
-    await fetch(API_BASE+'/api/photos/'+id,{method:'DELETE'});
+    await fetch(API_BASE+'/api/photos/'+id,{method:'DELETE',headers:{'Authorization':'Bearer '+authToken}});
     await fetchPhotos();
     renderAdminList();
     renderSlideshow();
@@ -309,7 +309,7 @@ async function editPhoto(id){
   const nd=prompt("Description:",p.desc||"");
   if(nd===null)return;
   try{
-    await fetch(API_BASE+'/api/photos/'+id,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({title:nt||p.title,desc:nd})});
+    await fetch(API_BASE+'/api/photos/'+id,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({title:nt||p.title,desc:nd})});
     await fetchPhotos();
     renderAdminList();
     renderSlideshow();
