@@ -1,5 +1,17 @@
 const API_BASE = '';
 
+/* === FIREBASE === */
+firebase.initializeApp({
+  apiKey: "AIzaSyCD8c_Pe_DfTGCHB0BsWY4XPMBDuw89FMQ",
+  authDomain: "akshay-ranjith-profolio.firebaseapp.com",
+  projectId: "akshay-ranjith-profolio",
+  storageBucket: "akshay-ranjith-profolio.firebasestorage.app",
+  messagingSenderId: "292316438815",
+  appId: "1:292316438815:web:f61cb6d518562f3fe8502a",
+  measurementId: "G-2YQV8TRGDE"
+});
+firebase.analytics();
+
 /* === STATE === */
 let photos=[];
 let slideIdx=0;
@@ -42,12 +54,6 @@ async function fetchPhotos(){
   }
   return photos;
 }
-
-/* === FILE INPUT LABEL === */
-document.getElementById('addFile').addEventListener('change',function(){
-  const label=document.getElementById('fileLabel');
-  label.textContent=this.files[0]?this.files[0].name:'Choose image';
-});
 
 /* === SLIDESHOW === */
 function renderSlideshow(){
@@ -322,24 +328,26 @@ async function savePhotoOrder(order){
 }
 async function addPhoto(e){
   e.preventDefault();
-  const form=new FormData();
-  const fileInput=document.getElementById("addFile");
   const title=document.getElementById("addTitle").value.trim();
+  const url=document.getElementById("addUrl").value.trim();
   const desc=document.getElementById("addDesc").value.trim();
-  if(!title||!fileInput.files[0])return;
-  form.append('title',title);
-  form.append('desc',desc);
-  form.append('image',fileInput.files[0]);
+  if(!title||!url){alert('Please enter both title and image URL');return;}
   try{
-    const res=await fetch(API_BASE+'/api/photos',{method:'POST',headers:{'Authorization':'Bearer '+authToken},body:form});
+    const res=await fetch(API_BASE+'/api/photos',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},
+      body:JSON.stringify({title,url,desc})
+    });
     if(res.ok){
       await fetchPhotos();
       document.getElementById("addForm").reset();
-      document.getElementById("fileLabel").textContent="Choose image";
       renderAdminList();
       renderSlideshow();
+    }else{
+      const data=await res.json();
+      alert(data.error||'Failed to add photo');
     }
-  }catch(err){console.error(err);alert('Upload failed. Check server connection.');}
+  }catch(err){console.error(err);alert('Failed to add photo. Check server connection.');}
 }
 async function deletePhoto(id){
   try{
@@ -356,8 +364,10 @@ async function editPhoto(id){
   if(nt===null)return;
   const nd=prompt("Description:",p.desc||"");
   if(nd===null)return;
+  const nu=prompt("Image URL:",p.url||"");
+  if(nu===null)return;
   try{
-    await fetch(API_BASE+'/api/photos/'+id,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({title:nt||p.title,desc:nd})});
+    await fetch(API_BASE+'/api/photos/'+id,{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+authToken},body:JSON.stringify({title:nt||p.title,desc:nd,url:nu||p.url})});
     await fetchPhotos();
     renderAdminList();
     renderSlideshow();

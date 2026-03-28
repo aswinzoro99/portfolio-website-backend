@@ -8,6 +8,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/styles.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics-compat.js"></script>
 </head>
 <body>
 
@@ -76,10 +78,9 @@
     <div class="admin-add">
       <form class="add-row" id="addForm">
         <input type="text" id="addTitle" placeholder="Title" required>
-        <label class="file-label" for="addFile"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg><span id="fileLabel">Choose image</span></label>
-        <input type="file" id="addFile" accept="image/*" required>
+        <input type="url" id="addUrl" placeholder="Image URL (e.g., https://imgur.com/...)" required>
         <input type="text" id="addDesc" placeholder="Description">
-        <button type="submit" class="admin-primary">Upload</button>
+        <button type="submit" class="admin-primary">Add Photo</button>
       </form>
     </div>
     <div class="admin-list" id="adminList"></div>

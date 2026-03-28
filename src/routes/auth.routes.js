@@ -13,7 +13,7 @@ router.get('/public-key', (_req, res) => {
   res.json({ publicKey });
 });
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   let plainPassword;
   try {
@@ -21,7 +21,7 @@ router.post('/login', (req, res) => {
   } catch {
     return res.status(400).json({ error: 'Invalid encrypted payload' });
   }
-  const admin = readAdmin();
+  const admin = await readAdmin();
   if (!admin) return res.status(500).json({ error: 'Admin not configured' });
   if (username !== admin.username || !verifyPassword(plainPassword, admin.password)) {
     return res.status(401).json({ error: 'Invalid username or password' });
@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
 
 router.post('/forgot-password', async (req, res) => {
   const { username } = req.body;
-  const admin = readAdmin();
+  const admin = await readAdmin();
   if (!admin || username !== admin.username) {
     return res.status(404).json({ error: 'User not found' });
   }
@@ -41,7 +41,7 @@ router.post('/forgot-password', async (req, res) => {
   const expiry = Date.now() + 15 * 60 * 1000;
   admin.resetToken = token;
   admin.resetExpiry = expiry;
-  writeAdmin(admin);
+  await writeAdmin(admin);
 
   try {
     const t = await getTransporter();
@@ -72,7 +72,7 @@ router.post('/forgot-password', async (req, res) => {
   }
 });
 
-router.post('/reset-password', (req, res) => {
+router.post('/reset-password', async (req, res) => {
   const { token, password } = req.body;
   let plainPassword;
   try {
@@ -80,7 +80,7 @@ router.post('/reset-password', (req, res) => {
   } catch {
     return res.status(400).json({ error: 'Invalid encrypted payload' });
   }
-  const admin = readAdmin();
+  const admin = await readAdmin();
   if (!admin) return res.status(500).json({ error: 'Admin not configured' });
   if (!admin.resetToken || !admin.resetExpiry) {
     return res.status(400).json({ error: 'No reset request found. Request a new one.' });
@@ -88,7 +88,7 @@ router.post('/reset-password', (req, res) => {
   if (Date.now() > admin.resetExpiry) {
     admin.resetToken = null;
     admin.resetExpiry = null;
-    writeAdmin(admin);
+    await writeAdmin(admin);
     return res.status(400).json({ error: 'Token expired. Request a new one.' });
   }
   if (token.toUpperCase() !== admin.resetToken) {
@@ -100,7 +100,7 @@ router.post('/reset-password', (req, res) => {
   admin.password = hashPassword(plainPassword);
   admin.resetToken = null;
   admin.resetExpiry = null;
-  writeAdmin(admin);
+  await writeAdmin(admin);
   console.log('Admin password has been reset successfully.');
   res.json({ ok: true, message: 'Password reset successful' });
 });

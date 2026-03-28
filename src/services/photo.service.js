@@ -1,28 +1,51 @@
-const fs = require('fs');
-const path = require('path');
-const config = require('../config');
+const { db } = require('./firebase.service');
 
-const DATA_FILE = path.join(config.dataDir, 'photos.json');
+const PHOTOS_COLLECTION = 'photos';
 
-function readPhotos() {
-  try {
-    if (fs.existsSync(DATA_FILE)) {
-      return JSON.parse(fs.readFileSync(DATA_FILE, 'utf8'));
+async function readPhotos() {
+  const snapshot = await db
+    .collection(PHOTOS_COLLECTION)
+    .orderBy('order', 'asc')
+    .get();
+
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+}
+
+async function writePhotos(data) {
+  const collectionRef = db.collection(PHOTOS_COLLECTION);
+  const existing = await collectionRef.get();
+  const incomingIds = new Set(data.map((photo) => String(photo.id)));
+  const batch = db.batch();
+
+  existing.docs.forEach((doc) => {
+    if (!incomingIds.has(doc.id)) {
+      batch.delete(doc.ref);
     }
-  } catch {
-    // corrupt or missing file — fall through to default
-  }
-  return [];
+  });
+
+  data.forEach((photo, index) => {
+    const id = String(photo.id);
+    const payload = { ...photo, id, order: index };
+    batch.set(collectionRef.doc(id), payload);
+  });
+
+  await batch.commit();
 }
 
-function writePhotos(data) {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
+async function addPhoto(photo) {
+  const id = String(photo.id);
+  const photos = await readPhotos();
+  const order = photos.length;
+  await db.collection(PHOTOS_COLLECTION).doc(id).set({ ...photo, id, order });
+  return { ...photo, id, order };
 }
 
-function seedPhotos() {
-  if (readPhotos().length === 0) {
-    writePhotos([]);
-  }
+async function deletePhoto(id) {
+  await db.collection(PHOTOS_COLLECTION).doc(String(id)).delete();
 }
 
-module.exports = { readPhotos, writePhotos, seedPhotos };
+async function updatePhoto(id, data) {
+  await db.collection(PHOTOS_COLLECTION).doc(String(id)).update(data);
+}
+
+module.exports = { readPhotos, writePhotos, addPhoto, deletePhoto, updatePhoto };

@@ -1,4 +1,3 @@
-const path = require('path');
 const crypto = require('crypto');
 
 const isProduction = (process.env.NODE_ENV || 'development') === 'production';
@@ -21,9 +20,8 @@ const config = Object.freeze({
   },
 
   adminEmail: process.env.ADMIN_EMAIL || 'akshay1996ranjith@gmail.com',
-
-  dataDir: path.resolve(process.env.DATA_DIR || path.join(__dirname, '..', '..', 'data')),
-  uploadsDir: path.resolve(process.env.UPLOADS_DIR || path.join(__dirname, '..', '..', 'uploads')),
+  firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET || 'akshay-ranjith-profolio.firebasestorage.app',
+  firebaseServiceAccount: process.env.FIREBASE_SERVICE_ACCOUNT || '',
 
   uploadMaxSize: 20 * 1024 * 1024,
 });

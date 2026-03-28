@@ -1,9 +1,9 @@
-const fs = require('fs');
-const path = require('path');
 const crypto = require('crypto');
 const config = require('../config');
+const { db } = require('./firebase.service');
 
-const ADMIN_FILE = path.join(config.dataDir, 'admin.json');
+const ADMIN_COLLECTION = 'admin';
+const ADMIN_DOC_ID = 'default';
 
 function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -17,37 +17,34 @@ function verifyPassword(password, stored) {
   return hash === test;
 }
 
-function readAdmin() {
-  try {
-    if (fs.existsSync(ADMIN_FILE)) {
-      return JSON.parse(fs.readFileSync(ADMIN_FILE, 'utf8'));
-    }
-  } catch {
-    // corrupt or missing file — fall through to default
-  }
-  return null;
+async function readAdmin() {
+  const doc = await db.collection(ADMIN_COLLECTION).doc(ADMIN_DOC_ID).get();
+  if (!doc.exists) return null;
+  return doc.data();
 }
 
-function writeAdmin(data) {
-  fs.writeFileSync(ADMIN_FILE, JSON.stringify(data, null, 2));
+async function writeAdmin(data) {
+  await db.collection(ADMIN_COLLECTION).doc(ADMIN_DOC_ID).set(data);
 }
 
-function seedAdmin() {
-  if (!readAdmin()) {
-    const defaultPassword = config.adminDefaultPassword;
-    if (!defaultPassword) {
-      console.error('No admin account found. Set ADMIN_DEFAULT_PASSWORD env var to create one on startup.');
-      return;
-    }
-    writeAdmin({
-      username: 'akshay',
-      password: hashPassword(defaultPassword),
-      email: config.adminEmail,
-      resetToken: null,
-      resetExpiry: null,
-    });
-    console.log('Default admin created (username: akshay). Change the password after first login.');
+async function seedAdmin() {
+  const existingAdmin = await readAdmin();
+  if (existingAdmin) return;
+
+  const defaultPassword = config.adminDefaultPassword;
+  if (!defaultPassword) {
+    console.error('No admin account found. Set ADMIN_DEFAULT_PASSWORD env var to create one on startup.');
+    return;
   }
+
+  await writeAdmin({
+    username: 'akshay',
+    password: hashPassword(defaultPassword),
+    email: config.adminEmail,
+    resetToken: null,
+    resetExpiry: null,
+  });
+  console.log('Default admin created (username: akshay). Change the password after first login.');
 }
 
 module.exports = { hashPassword, verifyPassword, readAdmin, writeAdmin, seedAdmin };
