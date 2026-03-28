@@ -1,0 +1,27 @@
+public/index.html
+  87936a8eb89fc5b9 98
+public/js/firebase-config.js
+  87936a8eb89fc5b9 1-9
+public/js/app.js
+  87936a8eb89fc5b9 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.0.42",
+  "base_commit_sha": "4e1f9bbaacbae91a61ae2e59469ad7c1e17472c0",
+  "prompts": {
+    "87936a8eb89fc5b9": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "9474bf6b-bb34-49d8-847a-b98b4792fb23",
+        "model": "claude-4.5-opus-high-thinking"
+      },
+      "human_author": "Aswin Ranjith <aswin.ranjith@fyers.in>",
+      "messages": [],
+      "total_additions": 11,
+      "total_deletions": 9,
+      "accepted_lines": 11,
+      "overriden_lines": 0
+    }
+  }
+}
